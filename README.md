@@ -29,3 +29,6 @@ Settings → **Back up to Files** (items only; attachments are in the sync repos
 
 ## v1.0.0 (15 Oct 2026)
 First version.
+
+## v1.0.1 (15 Oct 2026)
+The header and bottom bar stay fixed while scrolling on iPhone; only the content area scrolls.
