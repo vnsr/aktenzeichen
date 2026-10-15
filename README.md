@@ -32,3 +32,15 @@ First version.
 
 ## v1.0.1 (15 Oct 2026)
 The header and bottom bar stay fixed while scrolling on iPhone; only the content area scrolls.
+
+## v1.0.2 (16 Oct 2026)
+Placeholders and examples use neutral names.
+
+## v1.1.0 (16 Oct 2026)
+New look: a dark "HUD" console design.
+- **Radar** on Upcoming: every date is a blip. Distance from the centre is days left (rings at 7, 30, 90 days and 1 year), the sector is the type of item. Amber blips need action now, red ones are overdue; tap one to open it.
+- **Case numbers**: every item gets its own reference, e.g. `AZ-V-26-0473` (V contract, D document, F deadline, W recurring).
+- **T-minus countdown**: `T−16` means 16 days left, `T+2` two days late. The item view shows a large countdown.
+- Colours carry meaning: cyan on track, amber act now, red overdue. The app now always uses the dark design.
+- Typeface Chakra Petch is bundled in `fonts/` (SIL Open Font License), so it works offline.
+

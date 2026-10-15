@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Aktenzeichen">
-<meta name="theme-color" content="#F6F3EC">
+<meta name="theme-color" content="#040A12">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" type="image/png" href="icon-192.png">
@@ -100,29 +100,180 @@ nav.tabs{position:relative;flex:none;z-index:6;display:flex;justify-content:cent
 .days.ok{background:color-mix(in srgb,var(--ok) 14%,var(--surface));color:var(--ok)}
 .bar{height:8px;border-radius:4px;background:var(--surface2);overflow:hidden}.bar i{display:block;height:100%;border-radius:4px;background:var(--c,var(--acc))}
 
-:root{--acc:#0F7C80;--k1:#C2532F;--k2:#0F7C80;--k3:#5B55C8;--k4:#8A6A12}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--acc:#3FB8BC;--k1:#EE8461;--k2:#3FB8BC;--k3:#9C97F0;--k4:#D4AE4A}}
-:root[data-theme="dark"]{--acc:#3FB8BC;--k1:#EE8461;--k2:#3FB8BC;--k3:#9C97F0;--k4:#D4AE4A}
-.ki{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;flex:none;background:color-mix(in srgb,var(--c) 14%,var(--surface));color:var(--c)}
-.ki svg{width:18px;height:18px}.ki.big{width:46px;height:46px;border-radius:14px}.ki.big svg{width:24px;height:24px}
+/* ===== Aktenzeichen "HUD" theme (v1.1) =====
+   Deep-space console. Colour carries meaning like a real HUD: cyan = on track, amber = act now, red = overdue.
+   One bold element: the Fristen-Radar on Upcoming. Everything else stays quiet: thin edges, corner brackets, glow only on state.
+   Layout guard: never touch position/overflow/height of html, body, main, nav.tabs or header.top here (see build.py). */
+@font-face{font-family:"Chakra Petch";src:url(fonts/chakra-petch-latin-500-normal.woff2) format("woff2");font-weight:500;font-display:swap}
+@font-face{font-family:"Chakra Petch";src:url(fonts/chakra-petch-latin-600-normal.woff2) format("woff2");font-weight:600;font-display:swap}
+@font-face{font-family:"Chakra Petch";src:url(fonts/chakra-petch-latin-700-normal.woff2) format("woff2");font-weight:700;font-display:swap}
+/* triple :root outranks the core's light/dark token blocks: this app has one theme */
+:root:root:root{
+  --void:#040A12;--deep:#06111D;--panel:#0A1A2A;--panel2:#0F2537;--edge:#1C3E56;--edge2:#2A5C7A;
+  --cy:#4FE3F0;--ice:#DDF6FA;--dim:#7FA0B3;--amb:#FFB547;--red:#FF5468;
+  --bg:var(--void);--surface:var(--panel);--surface2:var(--panel2);--ink:var(--ice);--muted:var(--dim);--line:var(--edge);
+  --ok:var(--cy);--warn:var(--amb);--danger:var(--red);--on:#03121C;--acc:var(--cy);
+  --k1:var(--cy);--k2:var(--cy);--k3:var(--cy);--k4:var(--cy);
+  --hud:"Chakra Petch",ui-sans-serif,system-ui,sans-serif;
+  --glow:0 0 14px color-mix(in srgb,var(--cy) 45%,transparent);
+  color-scheme:dark}
+body{font-family:-apple-system,"SF Pro Text",system-ui,"Segoe UI",Roboto,sans-serif;color:var(--ice);
+  background:
+    radial-gradient(120% 60% at 50% -10%,color-mix(in srgb,var(--cy) 13%,transparent),transparent 60%),
+    repeating-linear-gradient(0deg,color-mix(in srgb,var(--cy) 4%,transparent) 0 1px,transparent 1px 28px),
+    repeating-linear-gradient(90deg,color-mix(in srgb,var(--cy) 4%,transparent) 0 1px,transparent 1px 28px),
+    var(--void)}
+:focus-visible{outline:2px solid var(--cy);outline-offset:2px}
+::selection{background:color-mix(in srgb,var(--cy) 35%,transparent)}
+
+/* ---------- console chrome ---------- */
+header.top{background:linear-gradient(var(--void) 70%,transparent)}
+.who h1{font-family:var(--hud);font-weight:700;font-size:23px;letter-spacing:.08em;color:var(--ice);text-shadow:var(--glow)}
+.who p{color:var(--cy);opacity:.85;font-size:13.5px;letter-spacing:.01em}
+.icon-btn{background:transparent;border:1px solid var(--edge2);color:var(--cy);border-radius:10px}
+nav.tabs{background:color-mix(in srgb,var(--void) 88%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  border-top:1px solid transparent;border-image:linear-gradient(90deg,transparent,var(--cy),transparent) 1}
+.tab{color:var(--dim);font-family:var(--hud);font-weight:500;letter-spacing:.03em}
+.tab.on{color:var(--cy);font-weight:600;text-shadow:var(--glow)}
+.tab.on svg{filter:drop-shadow(0 0 6px color-mix(in srgb,var(--cy) 70%,transparent))}
+.tab.add span.plus{background:color-mix(in srgb,var(--cy) 14%,var(--void));border:1.5px solid var(--cy);border-radius:9px;transform:rotate(45deg);width:42px;height:42px;
+  box-shadow:0 0 18px color-mix(in srgb,var(--cy) 40%,transparent),inset 0 0 12px color-mix(in srgb,var(--cy) 25%,transparent);color:var(--cy)}
+.tab.add span.plus svg{transform:rotate(-45deg)}
+.tab .badge{background:var(--red);box-shadow:0 0 10px var(--red);font-family:var(--hud)}
+
+/* ---------- panels with HUD corner brackets ---------- */
+.card,.list,.readout,.due,.facts,.calc,.nudge,.notes,.stat div{background:color-mix(in srgb,var(--panel) 82%,transparent);border:1px solid var(--edge);border-radius:6px;box-shadow:inset 0 0 28px color-mix(in srgb,var(--cy) 4%,transparent)}
+.card,.list,.readout,.due,.facts{position:relative}
+.card::before,.list::before,.readout::before,.due::before,.facts::before,
+.card::after,.list::after,.readout::after,.due::after,.facts::after{content:"";position:absolute;width:11px;height:11px;pointer-events:none;border-color:var(--cy);border-style:solid;opacity:.85}
+.card::before,.list::before,.readout::before,.due::before,.facts::before{left:0;top:0;border-width:2px 0 0 2px}
+.card::after,.list::after,.readout::after,.due::after,.facts::after{right:0;bottom:0;border-width:0 2px 2px 0}
+.card h3,.sh-head h2,.set-sec{font-family:var(--hud);letter-spacing:.03em}
+.card h3 svg{color:var(--cy)}
+.sec{font-family:var(--hud);font-weight:600;color:var(--cy);letter-spacing:.12em;font-size:12px;margin-top:18px}
+.sec::before{content:"";width:14px;height:2px;background:var(--cy);box-shadow:var(--glow);flex:none}
+.sec .r{color:var(--dim);letter-spacing:.02em;font-family:inherit}
+.muted,.hint{color:var(--dim)}
+
+/* ---------- case rows ---------- */
+.list li+li{border-top:1px solid color-mix(in srgb,var(--edge) 70%,transparent)}
+.list .it:active{background:color-mix(in srgb,var(--cy) 8%,transparent)}
+.code{display:block;font-family:var(--hud);font-style:normal;font-size:11px;font-weight:600;letter-spacing:.12em;color:var(--cy);opacity:.72;margin-bottom:1px}
+.list .nm b{font-weight:600}
+.list.faded .nm b{color:var(--dim)}.list.faded .code{opacity:.4}
+.ki{border:1px solid color-mix(in srgb,var(--cy) 40%,var(--edge));background:color-mix(in srgb,var(--cy) 7%,transparent);border-radius:7px;color:var(--cy)}
+.ki.big{width:50px;height:50px;border-radius:10px;box-shadow:var(--glow),inset 0 0 14px color-mix(in srgb,var(--cy) 18%,transparent)}
+/* T-minus chips */
+.days{display:inline-flex;align-items:baseline;gap:2px;font-family:var(--hud);min-width:60px;justify-content:center;padding:4px 8px;border-radius:4px;
+  background:transparent;border:1px solid currentColor;color:var(--dim)}
+.days b{font-size:15px;font-weight:700;letter-spacing:.02em}.days i{font-style:normal;font-size:10.5px;opacity:.8}
+.days.ok{color:var(--cy);background:color-mix(in srgb,var(--cy) 8%,transparent)}
+.days.amb{color:var(--amb);background:color-mix(in srgb,var(--amb) 10%,transparent);text-shadow:0 0 10px color-mix(in srgb,var(--amb) 60%,transparent)}
+.days.red{color:var(--red);background:color-mix(in srgb,var(--red) 12%,transparent);text-shadow:0 0 10px color-mix(in srgb,var(--red) 70%,transparent)}
+.red{color:var(--red)}
+
+/* ---------- Fristen-Radar ---------- */
+.radar{max-width:380px;margin:2px auto 0}
+.radar svg{display:block;width:100%;height:auto;overflow:visible}
+.radar .ring{fill:none;stroke:color-mix(in srgb,var(--cy) 30%,transparent);stroke-width:1}
+.radar .ring.core{stroke:color-mix(in srgb,var(--cy) 60%,transparent);fill:color-mix(in srgb,var(--cy) 6%,transparent)}
+.radar .spoke{stroke:color-mix(in srgb,var(--cy) 16%,transparent);stroke-dasharray:2 4}
+.radar .tick{stroke:color-mix(in srgb,var(--cy) 40%,transparent)}
+.radar text{paint-order:stroke;stroke:var(--void);stroke-width:4px;stroke-linejoin:round}
+.radar .rl{fill:var(--dim);font:500 9px var(--hud);letter-spacing:.06em}
+.radar .sl{fill:var(--cy);font:600 10.5px var(--hud);letter-spacing:.14em;opacity:.8}
+.radar .sweep{transform-origin:180px 180px;animation:sweep 7s linear infinite}
+.radar .beam{stroke:var(--cy);stroke-width:1.5;opacity:.75;filter:drop-shadow(0 0 4px var(--cy))}
+@keyframes sweep{to{transform:rotate(360deg)}}
+.radar .blip{cursor:pointer;outline:none}
+.radar .hit{fill:transparent}
+.radar .dot{fill:var(--cy);filter:drop-shadow(0 0 4px var(--cy))}
+.radar .blip.now .dot{fill:var(--amb);filter:drop-shadow(0 0 5px var(--amb))}
+.radar .blip.over .dot{fill:var(--red);filter:drop-shadow(0 0 6px var(--red))}
+.radar .blip.q .dot{fill:none;stroke:var(--cy);stroke-width:1.2;opacity:.55;filter:none}
+.radar .halo{fill:none;stroke-width:1.2;transform-box:fill-box;transform-origin:center;animation:ping 2.2s ease-out infinite}
+.radar .blip.now .halo{stroke:var(--amb)}.radar .blip.over .halo{stroke:var(--red)}
+@keyframes ping{0%{transform:scale(.6);opacity:.9}100%{transform:scale(2.1);opacity:0}}
+.radar .blip:focus-visible .dot{stroke:var(--ice);stroke-width:2}
+.radar .tag line{stroke-width:1}.radar .tag text{font:600 10.5px var(--hud);letter-spacing:.03em}
+.radar .tag.now line{stroke:var(--amb)}.radar .tag.now text{fill:var(--amb)}
+.radar .tag.over line{stroke:var(--red)}.radar .tag.over text{fill:var(--red)}
+.radar-note{text-align:center;margin:-2px 0 6px}
+@media (prefers-reduced-motion:reduce){.radar .sweep{display:none}.radar .halo{animation:none;opacity:.5}}
+.readout{display:grid;grid-template-columns:repeat(4,1fr);margin:6px 0 4px;padding:10px 4px}
+.readout div{text-align:center;display:flex;flex-direction:column;gap:1px;min-width:0}
+.readout div+div{border-left:1px solid color-mix(in srgb,var(--edge) 80%,transparent)}
+.readout b{font:700 21px var(--hud);color:var(--ice);letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.readout span{font-size:11.5px;color:var(--dim)}
+.readout .red b{color:var(--red);text-shadow:0 0 12px color-mix(in srgb,var(--red) 70%,transparent)}
+.readout .amb b{color:var(--amb);text-shadow:0 0 12px color-mix(in srgb,var(--amb) 60%,transparent)}
+.calm h3{font-weight:600;color:var(--cy)}
+
+/* ---------- case file (detail) ---------- */
+.hero{gap:14px;margin:6px 0 16px}
+.hero .code{font-size:12px;opacity:.9}
+.hero h2{font-family:var(--hud);font-weight:700;font-size:23px;letter-spacing:.01em;line-height:1.15;margin:2px 0 3px}
+.hero small{color:var(--dim)}
+.due{--c:var(--cy);display:flex;align-items:center;gap:16px;padding:14px 16px;margin-bottom:12px;border-left:1px solid var(--edge)}
+.due.now{--c:var(--amb)}.due.over{--c:var(--red)}.due.quiet{--c:var(--dim)}
+.due .cd{display:flex;flex-direction:column;align-items:center;min-width:92px;color:var(--c)}
+.due .cd b{font:700 40px/1 var(--hud);letter-spacing:.01em;text-shadow:0 0 18px color-mix(in srgb,var(--c) 60%,transparent)}
+.due .cd i{font-style:normal;font-size:11.5px;opacity:.85;margin-top:3px}
+.due .cdl{flex:1;min-width:0;border-left:1px solid color-mix(in srgb,var(--c) 35%,var(--edge));padding-left:14px}
+.due .cdl>span{display:block;font:600 11.5px var(--hud);letter-spacing:.1em;color:var(--c);text-transform:uppercase}
+.due .cdl>b{display:block;font-size:16px;margin:2px 0 8px}
+.segs{display:flex;gap:2px;color:var(--c)}.segs i{flex:1;height:6px;border-radius:1px;background:color-mix(in srgb,var(--c) 13%,transparent)}
+.segs i.on{background:currentColor;box-shadow:0 0 6px color-mix(in srgb,var(--c) 70%,transparent)}
+.facts li+li{border-top:1px solid color-mix(in srgb,var(--edge) 70%,transparent)}.facts b{font-family:var(--hud);font-weight:600;letter-spacing:.02em}
+.notes{white-space:pre-wrap}
+
+/* ---------- controls ---------- */
+.btn{background:transparent;border:1px solid var(--edge2);border-radius:6px;color:var(--ice);font-family:var(--hud);font-weight:600;letter-spacing:.03em}
+.btn.primary{background:var(--cy);border-color:var(--cy);color:var(--on);box-shadow:0 0 18px color-mix(in srgb,var(--cy) 35%,transparent)}
+.btn.danger{color:var(--red);border-color:color-mix(in srgb,var(--red) 45%,var(--edge))}
+.btn:active{transform:translateY(1px)}
+.chip{background:color-mix(in srgb,var(--cy) 5%,transparent);border:1px solid var(--edge2);color:var(--ice);border-radius:5px;font-weight:500}
+.chip.on{background:var(--cy);border-color:var(--cy);color:var(--on)}.chip.a{color:var(--cy);border-color:color-mix(in srgb,var(--cy) 50%,var(--edge))}
+.seg{background:var(--deep);border:1px solid var(--edge);border-radius:7px}
+.seg button{font-family:var(--hud);letter-spacing:.03em;border-radius:5px}
+.seg button.on{background:color-mix(in srgb,var(--cy) 15%,transparent);color:var(--cy);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--cy) 55%,transparent)}
+.fld>span{color:var(--dim);font-family:var(--hud);letter-spacing:.06em;font-size:12px}
+.fld input,.fld select,.fld textarea,.letter{background:var(--deep);border:1px solid var(--edge);border-radius:6px;color:var(--ice)}
+.fld input:focus,.fld select:focus,.fld textarea:focus,.letter:focus{outline:none;border-color:var(--cy);box-shadow:0 0 0 3px color-mix(in srgb,var(--cy) 18%,transparent)}
+.fld input::placeholder,.fld textarea::placeholder{color:color-mix(in srgb,var(--dim) 70%,transparent)}
+.sw{background:var(--deep);border-color:var(--edge2)}.sw.on{background:var(--cy);border-color:var(--cy);box-shadow:var(--glow)}
+.sw::after{background:var(--ice)}
+.stat b{font-family:var(--hud);font-weight:700}
+.bar{background:color-mix(in srgb,var(--cy) 10%,transparent);border-radius:1px;height:7px}
+.bar i{background:repeating-linear-gradient(90deg,var(--cy) 0 6px,transparent 6px 8px);border-radius:0;box-shadow:none}
+.lr b{font-family:var(--hud);font-weight:600}
+.warn{background:color-mix(in srgb,var(--amb) 9%,var(--panel));border:1px solid color-mix(in srgb,var(--amb) 45%,var(--edge));border-radius:6px}
+.nudge.err{border-color:var(--red);color:var(--red)}
+.link{color:var(--dim)}
+
+/* ---------- sheet, toast ---------- */
+.scrim{background:rgba(1,6,12,.66);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.sheet{background:linear-gradient(var(--deep),var(--void));border-radius:14px 14px 0 0;box-shadow:0 -1px 0 color-mix(in srgb,var(--cy) 60%,transparent),0 -10px 40px color-mix(in srgb,var(--cy) 12%,transparent)}
+.grab{background:color-mix(in srgb,var(--cy) 45%,transparent)}
+.sh-foot{background:var(--void);border-top-color:var(--edge)}
+.toast{background:var(--panel);color:var(--ice);border:1px solid var(--cy);border-radius:6px;box-shadow:var(--glow);font-family:var(--hud);letter-spacing:.02em}
+.toast button{color:var(--amb)}
+
+/* ---------- carried over from v1 ---------- */
+.ki{width:34px;height:34px;display:grid;place-items:center;flex:none}
+.ki svg{width:18px;height:18px}.ki.big svg{width:24px;height:24px}
 .clipi{width:12px;height:12px;vertical-align:-1px}
-.list.faded .nm b{color:var(--muted);font-weight:500}
-.red{color:var(--danger)}
-.calm h3{font-weight:600;color:var(--ok)}.calm h3 svg{color:var(--ok)}
-.lr{display:flex;justify-content:space-between;font-size:14px;margin-bottom:4px}.lr span{color:var(--muted)}
-.hero{display:flex;gap:12px;align-items:center;margin:4px 0 14px}.hero small{color:var(--muted);font-size:13px}.hero h2{font-size:22px;line-height:1.2}
-.due{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--ok);border-radius:14px;padding:12px 14px;margin-bottom:12px}
-.due>div{flex:1}.due>div>span{display:block;font-size:12.5px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em}.due b{font-size:18px}
-.due.now{border-left-color:var(--warn)}.due.over{border-left-color:var(--danger)}
-.facts{list-style:none;background:var(--surface);border:1px solid var(--line);border-radius:14px;margin-bottom:12px}
-.facts li{display:flex;justify-content:space-between;gap:12px;padding:9px 14px;font-size:14.5px}.facts li+li{border-top:1px solid var(--line)}.facts span{color:var(--muted)}.facts b{font-weight:600;text-align:right}
-.notes{white-space:pre-wrap;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 14px;font-size:15px;margin-bottom:10px}
+.lr{display:flex;justify-content:space-between;font-size:14px;margin-bottom:4px}.lr span{color:var(--dim)}
+.hero{display:flex;align-items:center}
+.facts{list-style:none;margin-bottom:12px}
+.facts li{display:flex;justify-content:space-between;gap:12px;padding:9px 14px;font-size:14.5px}.facts span{color:var(--dim)}.facts b{text-align:right}
+.notes{padding:10px 14px;font-size:15px;margin-bottom:10px}
 .linkbtn{display:inline-block;text-decoration:none;margin-bottom:6px}
 .actgrid{display:grid;gap:8px;margin-top:14px}
 .icon-btn.sm{width:36px;height:36px}.icon-btn.sm svg{width:17px;height:17px}
 .list .it .nm{background:none}
-.letter{width:100%;min-height:52vh;padding:12px;border-radius:14px;border:1px solid var(--line);background:var(--surface);font-size:15px;line-height:1.45;font-family:inherit}
-.photo{width:100%;border-radius:14px;display:block}
+.letter{width:100%;min-height:52vh;padding:12px;font-size:15px;font-family:inherit}
+.photo{width:100%;border-radius:8px;display:block;border:1px solid var(--edge)}
 
 </style>
 </head>
@@ -242,7 +393,7 @@ function renderHeader(){
   $('#gearBtn').innerHTML=I.gear;$('#gearBtn').classList.toggle('alert',!!(S.sync.on&&S.sync.err));
 }
 function render(){
-  document.documentElement.dataset.theme=S.settings.theme==='auto'?'':S.settings.theme;
+  document.documentElement.dataset.theme=APP.fixedTheme||(S.settings.theme==='auto'?'':S.settings.theme);
   renderHeader();renderTabs();
   let h='';
   if(S.sync.on&&S.sync.err)h+=`<div class="nudge err"><span>Sync paused. ${esc(S.sync.err)}</span><button class="btn small" data-act="settings">Settings</button></div>`;
@@ -293,7 +444,7 @@ function settingsView(){
     f+=`<label class="fld" style="margin-top:12px"><span>This phone's name (shown in sync history)</span><input id="s-dev" value="${esc(st.device)}" placeholder="e.g. My iPhone"></label>`;
     f+=`<div class="set-sec">Backup</div><p class="muted" style="margin-bottom:10px">${st.lastBackup?`Last backup ${esc(dayLabel(dayKey(st.lastBackup)).toLowerCase())}.`:'No backup yet.'} ${APP.backupNote||''}</p>
       <div class="stack"><button class="btn small" data-act="backup">Back up to Files</button><button class="btn small" data-act="import">Import backup</button>${APP.exportBtns||''}</div>`;
-    f+=`<div class="set-sec">Appearance</div><div class="seg">${[['auto','Automatic'],['light','Light'],['dark','Dark']].map(([k,l])=>`<button class="${st.theme===k?'on':''}" data-act="theme" data-v="${k}">${l}</button>`).join('')}</div>`;
+    if(!APP.fixedTheme)f+=`<div class="set-sec">Appearance</div><div class="seg">${[['auto','Automatic'],['light','Light'],['dark','Dark']].map(([k,l])=>`<button class="${st.theme===k?'on':''}" data-act="theme" data-v="${k}">${l}</button>`).join('')}</div>`;
     f+=`<div class="set-sec">Storage</div><p class="muted">${storeMode==='idb'?'Saved in IndexedDB on this phone.':'Saved in local storage on this phone.'} ${COLLS.map(c=>`${live(c).length} ${APP.colls[c].label||c}`).join(', ')}.</p>`;
     f+=`<div class="set-sec">About</div><p class="muted small" style="line-height:1.55">${esc(APP.name)} ${APP.version} (${APP.date}). ${APP.about||''}</p>`;
     return f+`</div>`;},
@@ -521,15 +672,16 @@ const PRESETS={
     ['Steuererklärung',{cat:'Tax',every:{n:12,u:'m'},lead:45}],['Zahnarzt-Kontrolle',{cat:'Health',every:{n:6,u:'m'},lead:14}],['Heizungswartung',{cat:'Home',every:{n:12,u:'m'},lead:21}],['Rauchmelder prüfen',{cat:'Home',every:{n:12,u:'m'},lead:7}]],
 };
 const APP={
-  id:'aktenzeichen',name:'Aktenzeichen',version:'1.0.2',date:'2026-10-16',dir:'aktenzeichen',
+  id:'aktenzeichen',name:'Aktenzeichen',version:'1.1.0',date:'2026-10-16',dir:'aktenzeichen',
   colls:{items:{label:'items'}},
   settings:{myName:'',myAddress:'',myCity:'',people:'',defLead:14,tab:'up',docSeg:'',dlSeg:'open'},
   tabs:[['up','Upcoming',I.cal],['contracts','Contracts',I.paper],['add','Add',I.plus],['docs','Documents',I.doc],['dl','Deadlines',I.flag]],
   addAction:'new',
   syncNote:'Keeps both phones in step (attachments too)',
+  fixedTheme:'dark',
   backupNote:'A backup holds all items. Attachments stay out of it, to keep the file small; with sync on they are in your private repository.',
   exportBtns:'<button class="btn small" data-act="ics-all">Export to Calendar</button>',
-  about:'Contract dates are worked out from the start date, minimum term, renewal period and notice period you enter. Presets are typical values, not legal advice: check the contract. Calendar export makes a one-off .ics file; export again after changes.',
+  about:'Contract dates are worked out from the start date, minimum term, renewal period and notice period you enter. Presets are typical values, not legal advice: check the contract. Calendar export makes a one-off .ics file; export again after changes. Typeface: Chakra Petch (SIL Open Font License, fonts/OFL.txt).',
 };
 const items=()=>live('items');
 const people=()=>String(S.settings.people||'').split(',').map(s=>s.trim()).filter(Boolean);
@@ -579,8 +731,14 @@ function status(it,ref){
 function everyText(e){e=e||{n:12,u:'m'};const n=+e.n||12;if(e.u==='y')return n===1?'year':`${n} years`;if(n%12===0)return n===12?'year':`${n/12} years`;return n===1?'month':`${n} months`;}
 const leadOf=it=>(it.lead===''||it.lead==null||isNaN(+it.lead))?(+S.settings.defLead||14):+it.lead;
 function urgency(it,st){st=st||status(it);if(st.none||st.done||st.quiet)return 'none';if(st.days<0)return 'over';if(st.days<=leadOf(it))return 'now';if(st.days<=30)return 'soon';if(st.days<=365)return 'later';return 'far';}
-function daysChip(st,u){if(st.none||st.done)return '';const d=st.days;const t=d<0?`${-d} d late`:d===0?'today':d===1?'1 day':d<=60?`${d} days`:d<=730?`${Math.round(d/30.4)} mo`:`${r1(d/365)} y`;
-  return `<span class="days ${u==='over'?'red':u==='now'?'amb':st.ended?'':st.quiet?'':'ok'}">${t}</span>`;}
+/* T-minus readout: days to the date, T+ once it has passed */
+function tm(d){const a=Math.abs(d);return {sign:d<0?'+':'−',n:a<=999?String(a):String(r1(a/365)).replace('.',','),unit:a<=999?(a===1?'day':'days'):'years'};}
+function daysChip(st,u){if(st.none||st.done)return '';const t=tm(st.days);
+  return `<span class="days ${u==='over'?'red':u==='now'?'amb':st.ended?'':st.quiet?'':'ok'}" aria-label="${st.days<0?t.n+' '+t.unit+' late':t.n+' '+t.unit+' left'}"><b>T${t.sign}${t.n}</b><i>${t.unit==='years'?'y':'d'}</i></span>`;}
+/* every item gets a stable case number, e.g. AZ-V-26-0473 (V Vertrag, D Dokument, F Frist, W wiederkehrend) */
+const KCODE={contract:'V',document:'D',deadline:'F',recurring:'W'};
+function caseCode(it){let h=0;for(const c of it.id)h=(h*31+c.charCodeAt(0))>>>0;const ts=parseInt(it.id.slice(0,8),36);
+  const yy=ts>1.5e12&&ts<4e12?String(new Date(ts).getFullYear()).slice(2):today().slice(2,4);return `AZ-${KCODE[it.kind]||'X'}-${yy}-${String(h%10000).padStart(4,'0')}`;}
 const needsAction=()=>items().filter(it=>{const u=urgency(it);return u==='over'||u==='now';});
 
 /* ---------- main screens ---------- */
@@ -591,7 +749,7 @@ APP.appBadge=()=>needsAction().length;
 function itemRow(it,st,opt={}){
   st=st||status(it);const u=urgency(it,st),[,icon,col]=KIND[it.kind];
   const sub=opt.sub!=null?opt.sub:st.text;
-  return `<li><button class="it" data-act="open" data-id="${it.id}"><span class="ki" style="--c:var(${col})">${icon}</span><span class="nm"><b>${esc(it.title)}</b><small>${esc(sub)}${it.att&&it.att.length?` · ${I.clip.replace('<svg','<svg class="clipi"')}${it.att.length}`:''}</small></span>${opt.right!=null?opt.right:daysChip(st,u)}</button></li>`;
+  return `<li><button class="it" data-act="open" data-id="${it.id}"><span class="ki" style="--c:var(${col})">${icon}</span><span class="nm"><em class="code">${caseCode(it)}</em><b>${esc(it.title)}</b><small>${esc(sub)}${it.att&&it.att.length?` · ${I.clip.replace('<svg','<svg class="clipi"')}${it.att.length}`:''}</small></span>${opt.right!=null?opt.right:daysChip(st,u)}</button></li>`;
 }
 function upcomingHtml(){
   const all=items().map(it=>({it,st:status(it)}));all.forEach(x=>x.u=urgency(x.it,x.st));
@@ -599,12 +757,42 @@ function upcomingHtml(){
   const g={over:[],now:[],soon:[],later:[]};for(const x of all)if(g[x.u])g[x.u].push(x);
   for(const k in g)g[k].sort((a,b)=>a.st.days-b.st.days);
   const flexN=all.filter(x=>x.st.flexible).length,mc=items().filter(i=>i.kind==='contract'&&!(status(i).ended)).reduce((a,c)=>a+monthlyCost(c),0);
-  let h=`<div class="stat"><div><span>Need action now</span><b class="${g.over.length+g.now.length?'red':''}">${g.over.length+g.now.length}</b><small>items</small></div><div><span>Next 30 days</span><b>${g.over.length+g.now.length+g.soon.length}</b><small>items</small></div></div>`;
+  let h=radarHtml(all);
+  h+=`<div class="readout"><div class="${g.over.length?'red':''}"><b>${g.over.length}</b><span>overdue</span></div><div class="${g.now.length?'amb':''}"><b>${g.now.length}</b><span>act now</span></div><div><b>${g.soon.length}</b><span>rest of 30 days</span></div><div><b>${mc?eur(mc).replace(/\s?€/,''):'–'}</b><span>€ a month</span></div></div>`;
   const sec=(k,title,hint)=>g[k].length?`<div class="sec">${title}${hint?`<span class="r">${hint}</span>`:''}</div><ul class="list">${g[k].map(x=>itemRow(x.it,x.st)).join('')}</ul>`:'';
   h+=sec('over','Overdue')+sec('now','Act now','inside the warning time')+sec('soon','Next 30 days')+sec('later','Later this year');
-  if(!g.over.length&&!g.now.length&&!g.soon.length)h=h.replace('</div></div>','</div></div>'+`<div class="card calm"><h3>${I.check}Nothing needs doing in the next 30 days</h3></div>`);
+  if(!g.over.length&&!g.now.length&&!g.soon.length)h+=`<div class="card calm"><h3>${I.check}Nothing needs doing in the next 30 days</h3></div>`;
   h+=`<p class="muted small" style="margin:10px 2px">${flexN?`${plural(flexN,'contract')} can be cancelled any month and ${flexN===1?'is':'are'} kept off this list. `:''}${mc?`Contracts cost ${eur(mc)} a month (${eur(mc*12)} a year). `:''}Items more than a year away are in their tabs.</p>`;
   return h;
+}
+/* Fristen-Radar: distance from the centre = days left (rings at 7, 30, 90, 365), sector = kind of item */
+const RSTOPS=[[0,22],[7,62],[30,102],[90,136],[365,162]];
+function radR(d){if(d<0)return 0;if(d>=365)return 162;for(let i=1;i<RSTOPS.length;i++){const [d0,r0]=RSTOPS[i-1],[d1,r1_]=RSTOPS[i];if(d<=d1)return r0+(r1_-r0)*(d-d0)/(d1-d0);}return 162;}
+const SECT=[['contract','Contracts'],['document','Documents'],['recurring','Recurring'],['deadline','Deadlines']];
+function radarHtml(all){
+  const C=180,pts=[];let beyond=0,quiet=0;
+  for(const x of all){const st=x.st;if(st.none||st.done||st.ended||st.due==null)continue;if(st.days>365){beyond++;continue;}
+    const si=SECT.findIndex(s=>s[0]===x.it.kind);let h=0;for(const c of x.it.id)h=(h*131+c.charCodeAt(0))>>>0;
+    const a0=-90+si*90+12,a=(a0+(h%1000)/1000*66)*Math.PI/180,over=st.days<0;
+    const r=over?6+(h%7):radR(st.days);if(st.quiet)quiet++;
+    pts.push({x:C+r*Math.cos(a),y:C+r*Math.sin(a),it:x.it,u:x.u,quiet:st.quiet,days:st.days,lx:Math.cos(a)>=0});}
+  const lab=pts.filter(p=>p.u==='over'||p.u==='now').sort((a,b)=>a.days-b.days).slice(0,3);
+  let s=`<div class="radar" role="img" aria-label="Radar of ${pts.length} upcoming dates"><svg viewBox="0 0 360 360">
+    <defs><radialGradient id="rg" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="var(--cy)" stop-opacity=".16"/><stop offset="1" stop-color="var(--cy)" stop-opacity="0"/></radialGradient>
+    <linearGradient id="sw" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="var(--cy)" stop-opacity="0"/><stop offset="1" stop-color="var(--cy)" stop-opacity=".38"/></linearGradient></defs>
+    <circle cx="${C}" cy="${C}" r="170" fill="url(#rg)"/>`;
+  [[7,'7 d'],[30,'30 d'],[90,'90 d'],[365,'1 y']].forEach(([d,l])=>{const r=radR(d);s+=`<circle class="ring" cx="${C}" cy="${C}" r="${r}"/><text class="rl" x="${C+4}" y="${C-r+11}">${l}</text>`;});
+  s+=`<circle class="ring core" cx="${C}" cy="${C}" r="22"/>`;
+  for(let i=0;i<4;i++){const a=(-90+i*90)*Math.PI/180;s+=`<line class="spoke" x1="${C+22*Math.cos(a)}" y1="${C+22*Math.sin(a)}" x2="${C+170*Math.cos(a)}" y2="${C+170*Math.sin(a)}"/>`;}
+  for(let k=0;k<72;k++){const a=k*5*Math.PI/180,r1_=k%6?166:161;s+=`<line class="tick" x1="${C+r1_*Math.cos(a)}" y1="${C+r1_*Math.sin(a)}" x2="${C+170*Math.cos(a)}" y2="${C+170*Math.sin(a)}"/>`;}
+  SECT.forEach(([k,l],i)=>{const a=(-45+i*90)*Math.PI/180,r=176;s+=`<text class="sl" x="${C+r*Math.cos(a)*.86}" y="${C+r*Math.sin(a)*.86+(Math.sin(a)>0?10:0)}" text-anchor="middle">${l}</text>`;});
+  s+=`<g class="sweep"><path d="M${C} ${C} L${C+170} ${C} A170 170 0 0 0 ${C+170*Math.cos(-40*Math.PI/180)} ${C+170*Math.sin(-40*Math.PI/180)} Z" fill="url(#sw)"/><line x1="${C}" y1="${C}" x2="${C+170}" y2="${C}" class="beam"/></g>`;
+  for(const p of pts)s+=`<g class="blip ${p.u} ${p.quiet?'q':''}" data-act="open" data-id="${p.it.id}" tabindex="0"><circle class="hit" cx="${p.x}" cy="${p.y}" r="13"/>${p.u==='over'||p.u==='now'?`<circle class="halo" cx="${p.x}" cy="${p.y}" r="9"/>`:''}<circle class="dot" cx="${p.x}" cy="${p.y}" r="${p.quiet?3:4.5}"/><title>${esc(p.it.title)}: ${p.days<0?-p.days+' days late':p.days+' days left'}</title></g>`;
+  for(const p of lab){const t=p.it.title.length>16?p.it.title.slice(0,15)+'…':p.it.title,dx=p.lx?12:-12;
+    s+=`<g class="tag ${p.u}"><line x1="${p.x+(p.lx?6:-6)}" y1="${p.y}" x2="${p.x+dx}" y2="${p.y}"/><text x="${p.x+dx+(p.lx?3:-3)}" y="${p.y+4}" text-anchor="${p.lx?'start':'end'}">${esc(t)}</text></g>`;}
+  s+=`</svg></div>`;
+  const notes=[];if(beyond)notes.push(`${beyond} more than a year away`);if(quiet)notes.push(`faint dots can be cancelled any month`);
+  return s+(notes.length?`<p class="muted small radar-note">${notes.join('; ')}.</p>`:'');
 }
 function starterHtml(){
   const c=(k,list)=>list.map(([n])=>`<button class="chip" data-act="preset" data-k="${k}" data-n="${esc(n)}">+ ${esc(n)}</button>`).join('');
@@ -665,9 +853,12 @@ function detailView(id){
   return {full:true,html:()=>{
     const it=getRec('items',id);if(!it||it.deleted)return `${head('Not found')}<div class="sh-body"><p class="muted">This item was deleted.</p></div>`;
     const st=status(it),u=urgency(it,st),[kl,icon,col]=KIND[it.kind];
-    let b=`<div class="hero" style="--c:var(${col})"><span class="ki big">${icon}</span><div><small>${esc(kl)}${it.cat?' · '+esc(it.cat):''}${it.person?' · '+esc(it.person):''}</small><h2>${esc(it.title)}</h2></div></div>`;
+    let b=`<div class="hero" style="--c:var(${col})"><span class="ki big">${icon}</span><div><em class="code">${caseCode(it)}</em><h2>${esc(it.title)}</h2><small>${esc(kl)}${it.cat?' / '+esc(it.cat):''}${it.person?' / '+esc(it.person):''}</small></div></div>`;
     if(!st.none&&!st.done){const d=st.days;
-      b+=`<div class="due ${u==='over'?'over':u==='now'?'now':''}"><div><span>${esc(st.act||(st.cancelled?'Ends':st.flexible?'Next possible end':'Date'))}</span><b>${fmtD(st.flexible?st.end:st.due,{weekday:'short',day:'numeric',month:'long',year:'numeric'})}</b></div>${daysChip(st,u)}</div>`;
+      const t=tm(d),lead=leadOf(it),frac=d<0?1:Math.max(0,Math.min(1,1-d/Math.max(lead*2,30)));
+      b+=`<div class="due ${u==='over'?'over':u==='now'?'now':st.quiet?'quiet':''}"><div class="cd"><b>T${t.sign}${t.n}</b><i>${d<0?t.unit+' late':t.unit+' left'}</i></div>
+        <div class="cdl"><span>${esc(st.act||(st.cancelled?'Ends':st.flexible?'Give notice by':'Date'))}</span><b>${fmtD(st.due,{weekday:'short',day:'numeric',month:'long',year:'numeric'})}</b>
+        <div class="segs" aria-hidden="true">${Array.from({length:24},(_,i)=>`<i class="${i<Math.round(frac*24)?'on':''}"></i>`).join('')}</div></div></div>`;
       if(it.kind==='contract'&&!st.cancelled&&!st.auto&&st.end)b+=`<p class="muted" style="margin:-4px 2px 12px">${st.flexible?`Give notice by ${fmtD(st.due)} to leave on ${fmtD(st.end)}. It renews month by month, so there is no rush.`:st.inMin&&+it.renew<=1?`Cancel by then to leave when the minimum term ends on ${fmtD(st.end)}. After that it can be cancelled any month.`:`If you cancel by then, it ends on ${fmtD(st.end)}. Otherwise it runs on for ${plural(+it.renew,'month')}.`}</p>`;
       if(d>=0&&!st.quiet)b+=`<p class="muted small" style="margin:-4px 2px 12px">Warning starts ${plural(leadOf(it),'day')} before${d>leadOf(it)?`, on ${fmtD(addDay(st.due,-leadOf(it)))}`:' (now)'}.</p>`;
     }else b+=`<div class="calc">${esc(st.text)}</div>`;
