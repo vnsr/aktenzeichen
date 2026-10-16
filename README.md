@@ -44,3 +44,5 @@ New look: a dark "HUD" console design.
 - Colours carry meaning: cyan on track, amber act now, red overdue. The app now always uses the dark design.
 - Typeface Chakra Petch is bundled in `fonts/` (SIL Open Font License), so it works offline.
 
+## v1.1.1 (16 Oct 2026)
+New app icon in the shared high-tech style (Case file scan). To see it on the home screen, remove the app and add it to the Home Screen again (back up or turn on sync first: removing the app deletes its data on that phone).
